@@ -1,52 +1,57 @@
-import path from "path";
-import fs from "fs";
+import path from 'path';
+import fs from 'fs';
 import sharp, { Sharp } from 'sharp';
+
+export const createSharpInstance = (src: string): Sharp => sharp(src);
 
 const FULL_IMAGES_DIR = path.join(__dirname, '../../images/full');
 const THUMBNAIL_IMAGES_DIR = path.join(__dirname, '../../public/thumbnails');
 
 export const getSourceImagePath = (filename: string): string => {
-    return path.join(FULL_IMAGES_DIR, `${filename}.jpg`);
+     return path.join(FULL_IMAGES_DIR, `${filename}.jpg`);
 };
 
-export const getThumbnailPath = (filename: string, width: number, height: number): string => {
-    return path.join(THUMBNAIL_IMAGES_DIR, `${filename}_${width}x${height}.jpg`);
+export const getThumbnailPath = (
+     filename: string,
+     width: number,
+     height: number,
+): string => {
+     return path.join(
+          THUMBNAIL_IMAGES_DIR,
+          `${filename}_${width}x${height}.jpg`,
+     );
 };
 
-// To check if image is exists
 export const isFullImageExists = (filename: string): boolean => {
-    const sourcePath = getSourceImagePath(filename);
-    return fs.existsSync(sourcePath);
+     const sourcePath = getSourceImagePath(filename);
+     return fs.existsSync(sourcePath);
 };
 
 export const resizeImage = async ({
-    filename,
-    width,
-    height,
+     filename,
+     width,
+     height,
 }: {
-    filename: string;
-    width: number;
-    height: number;
+     filename: string;
+     width: number;
+     height: number;
 }): Promise<string> => {
+     const sourcePath = getSourceImagePath(filename);
+     const outputPath = getThumbnailPath(filename, width, height);
 
-    //   ensureThumbnailsDir();
+     if (!fs.existsSync(sourcePath)) {
+          throw new Error(`Source image not found: ${filename}.jpg`);
+     }
 
-    const sourcePath = getSourceImagePath(filename);
-    const outputPath = getThumbnailPath(filename, width, height);
+     const image: Sharp = createSharpInstance(sourcePath);
 
-    if (!fs.existsSync(sourcePath)) {
-        throw new Error(`Source image not found: ${filename}.jpg`);
-    }
+     await image
+          .resize(width, height, {
+               fit: 'cover',
+               position: 'center',
+          })
+          .jpeg({ quality: 85 })
+          .toFile(outputPath);
 
-    const image: Sharp = sharp(sourcePath);
-
-    await image
-        .resize(width, height, {
-            fit: 'cover',
-            position: 'center',
-        })
-        .jpeg({ quality: 85 })
-        .toFile(outputPath);
-
-    return outputPath;
+     return outputPath;
 };
