@@ -52,6 +52,19 @@ Feel free to attempt to create this project based on the overview and rubric spe
    If everything else has gone well, you should be able to compile your typescript and start up your production server to test that everything still works as expected. Make sure you've provided all necessary information in your readme file, so your reviewer knows how to test your API. If everything works and your documentation is complete, you're ready to submit!
    **_Congratulations!_**
 
+## How to Run
+
+1. Start the server by running `npm start` or `npm run start:dev`.
+2. Test the following exact URLs in your browser or an API client:
+
+- **Root API endpoint**:
+  [http://localhost:3000/](http://localhost:3000/)
+  **Expected response**: A simple message indicating the main API route is working.
+
+- **Image processing endpoint**:
+  [http://localhost:3000/api/images?filename=fjord&width=200&height=200](http://localhost:3000/api/images?filename=fjord&width=200&height=200)
+  **Expected response**: The `fjord.jpg` image seamlessly resized to 200x200 pixels. If it's already cached, it will serve the pre-resized image directly. The generated thumbnails are saved in the `public/thumbnails/` directory.
+
 ## Version Control
 
 Although not a requirement, we recommend using Git from the very beginning if you choose to build on your local environment or use the provided workspace. Make sure to commit often and to use well-formatted commit messages.

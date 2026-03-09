@@ -43,6 +43,10 @@ export const resizeImage = async ({
           throw new Error(`Source image not found: ${filename}.jpg`);
      }
 
+     if (!fs.existsSync(THUMBNAIL_IMAGES_DIR)) {
+          fs.mkdirSync(THUMBNAIL_IMAGES_DIR, { recursive: true });
+     }
+
      const image: Sharp = createSharpInstance(sourcePath);
 
      await image
